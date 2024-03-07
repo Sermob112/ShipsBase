@@ -6,15 +6,15 @@ from PySide6.QtWidgets import *
 from PySide6.QtGui import QIcon
 from PySide6 import QtCore
 from PySide6 import QtWidgets
-# from DBtest import PurchasesWidget
-# from LoadCsv import CsvLoaderWidget
+from DBtest import PurchasesWidget
+from LoadCsv import CsvLoaderWidget
 # from InsertWidgetNMCK import InsertWidgetNMCK
 # from statisticWidget import StatisticWidget
 # from CurrencyWindow import CurrencyWidget
 # from debugWindow import DebugWidget
 # from HelpPanel import HelpPanel
 # from ContractFormular import ContractFormularWidget
-# from AllDbScroller import PurchasesWidgetAll
+from AllDbScroller import PurchasesWidgetAll
 # from ChangeLogWindow import ChangeLogWindow
 # from parserV3 import count_total_records
 from datetime import datetime
@@ -300,16 +300,17 @@ class Ui_MainWindow(QMainWindow):
         # layout.addWidget(self.ChangeWindow)
 
         #  #Загрузка виджета БД 
-        # self.purchaseViewerall = PurchasesWidgetAll(self,self.users_roles[0])
-        # self.purchaseViewerall.setParent(self)
-        # layout = QVBoxLayout(self.page0)
-        # layout.addWidget(self.purchaseViewerall)
+        self.purchaseViewerall = PurchasesWidgetAll(self,self.users_roles[0])
+        self.purchaseViewerall.setParent(self)
+        layout = QVBoxLayout(self.page0)
+        layout.addWidget(self.purchaseViewerall)
         # #Загрузка виджета БД закупок
         # self.purchaseViewer = PurchasesWidget(self,self.users_roles[0],self.username,self.ChangeWindow)
-        # self.purchaseViewer.setParent(self)
-        # layout = QVBoxLayout(self.page2)
-        # layout.addWidget(self.purchaseViewer)
-        # self.add_child_widget(self.purchaseViewer)
+        self.purchaseViewer = PurchasesWidget(self,self.users_roles[0],self.username)
+        self.purchaseViewer.setParent(self)
+        layout = QVBoxLayout(self.page2)
+        layout.addWidget(self.purchaseViewer)
+        self.add_child_widget(self.purchaseViewer)
         # self.contractFormular = ContractFormularWidget(self,self.users_roles[0],self.username,self.ChangeWindow)
         # self.contractFormular.setParent(self)
         # layout = QVBoxLayout(self.page8)
@@ -328,9 +329,10 @@ class Ui_MainWindow(QMainWindow):
          
         #     #Загрузка виджета CSV
         # self.loadCsv = CsvLoaderWidget(self, self.Insert,self.purchaseViewerall,self.users_roles[0],self.username,self.ChangeWindow )
-        # self.loadCsv.setParent(self)
-        # layout = QVBoxLayout(self.page1)
-        # layout.addWidget(self.loadCsv)
+        self.loadCsv = CsvLoaderWidget(self, self.purchaseViewerall,self.users_roles[0],self.username )
+        self.loadCsv.setParent(self)
+        layout = QVBoxLayout(self.page1)
+        layout.addWidget(self.loadCsv)
         #   #Загрузка виджета статистического анализа
         # self.Statistic = StatisticWidget(self.purchaseViewerall,self.users_roles[0])
         # self.Statistic.setParent(self)
@@ -346,7 +348,7 @@ class Ui_MainWindow(QMainWindow):
       
 
         # layout.addWidget(self.helper)
-        # self.purchaseViewerall.window = self
+        self.purchaseViewerall.window = self
         self.horizontalLayout.addWidget(self.stackedWidget)
 
         self.verticalLayout.addLayout(self.horizontalLayout)

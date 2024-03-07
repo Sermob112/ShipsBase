@@ -110,4 +110,4 @@ def insert_in_table(csv_file_path):
     finally:
         database.close()
 
-insert_in_table('Файлы отладки.csv')
+# insert_in_table('Файлы отладки.csv')
