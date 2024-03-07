@@ -1,5 +1,4 @@
 from models import *  # Замените models на имя вашего модуля или файла с определением моделей
-from playhouse.postgres_ext import PostgresqlExtDatabase
 
 # Подключение к PostgreSQL
 
@@ -29,7 +28,7 @@ def initialize_database():
     try:
         system_db.execute_sql("CREATE DATABASE shipbase")
         db = PostgresqlDatabase('shipbase', user='postgres', password='sa', host='localhost', port=5432)
-        db.create_tables([User,Role,UserRole,UserLog,ChangedDate], safe=True)
+        db.create_tables([User,Role,UserRole,UserLog,ChangedDate,Ship], safe=True)
         admin_user = User.create(username='Якупов', password='1')
         readactor = User.create(username='Померанец', password='2')
         regular_user = User.create(username='Маковий', password='3')

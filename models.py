@@ -9,7 +9,49 @@ database = PostgresqlExtDatabase('shipbase', user='postgres', password='sa',
 class BaseModel(Model):
     class Meta:
         database = database
+class Ship(Model):
+    id = AutoField(primary_key=True)
+    reg_number = CharField(null=True)
+    name = CharField(null=True)
+    construction_number = CharField(null=True)
+    ship_project = CharField(null=True)
+    type_and_purpose = CharField(null=True)
+    construction_date = DateField(null=True)
+    construction_place = CharField(null=True)
+    class_formula_category = CharField(null=True)
+    overall_length = FloatField(null=True)
+    constructive_length = FloatField(null=True)
+    overall_width = FloatField(null=True)
+    constructive_width = FloatField(null=True)
+    freeboard = FloatField(null=True)
+    side_height = FloatField(null=True)
+    gross_tonnage = FloatField(null=True)
+    net_tonnage = FloatField(null=True)
+    deadweight = FloatField(null=True)
+    displacement = FloatField(null=True)
+    cargo_capacity = FloatField(null=True)
+    transverse_bulkheads = IntegerField(null=True)
+    longitudinal_bulkheads = IntegerField(null=True)
+    passenger_capacity = IntegerField(null=True)
+    crew = IntegerField(null=True)
+    organization_group = CharField(null=True)
+    ballast_tanks = IntegerField(null=True)
+    total_tank_capacity = FloatField(null=True)
+    crane_1_capacity = FloatField(null=True)
+    crane_2_capacity = FloatField(null=True)
+    crane_3_capacity = FloatField(null=True)
+    hull_material = CharField(null=True)
+    superstructure_material = CharField(null=True)
+    main_engine_type = CharField(null=True)
+    main_engine_model = CharField(null=True)
+    main_engine_power_kw = FloatField(null=True)
+    main_engine_quantity = IntegerField(null=True)
+    total_engine_power_kw = FloatField(null=True)
+    total_generators_kw = FloatField(null=True)
+    total_auxiliary_engines_kw = FloatField(null=True)
 
+    class Meta:
+        database = database
 
 class User(Model):
     id = AutoField(primary_key=True)
