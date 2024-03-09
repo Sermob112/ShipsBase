@@ -7,8 +7,8 @@ import sqlite3
 from models import *
 
 
-database = PostgresqlExtDatabase('shipbase', user='postgres', password='sa',
-                                 host='localhost', port=5432)
+# database = PostgresqlExtDatabase('shipbase', user='postgres', password='sa',
+#                                  host='localhost', port=5432)
 def insert_in_table(csv_file_path):
     errors = []
     inserted_rows = 0 
@@ -102,12 +102,18 @@ def insert_in_table(csv_file_path):
                 total_generators_kw=total_generators_kw,
                 total_auxiliary_engines_kw=total_auxiliary_engines_kw
                      )
-        
+                inserted_rows += 1
+        # inserted_rows = len([record for record in Ship.select()])
 
     except Exception as e:
-        print("Ошибка подключения или вставки данных:", e)
         errors.append(str(e))  # Добавьте ошибку в список ошибок
-    finally:
-        database.close()
+    # finally:
+    #     database.close()
+    return inserted_rows, errors
 
+    
+def count_total_records():
+    total_records = Ship.select().count()
+
+    return total_records
 # insert_in_table('Файлы отладки.csv')

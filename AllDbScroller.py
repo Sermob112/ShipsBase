@@ -48,18 +48,18 @@ class PurchasesWidgetAll(QWidget):
         self.table.setColumnCount(9)
 
         # Устанавливаем заголовки колонок
-        column_headers = ["№ПП", "Закон", "Реестровый номер", "Дата размещения",
-                          "Наименование закупки", "Предмет аукциона", "НМЦК",
-                          "Валюта", "Наименование заказчика"]
+        column_headers = ["№ПП", "Регистровый Номер", "Название", "Строительный номер",
+                          "Проект судна", "Тип и назначение", "Дата постройки",
+                          "Место постройки", "Категория"]
         self.table.resizeColumnsToContents()
         self.table.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.table.setHorizontalHeaderLabels(column_headers)
-        self.table.setColumnWidth(4, 600)
-        self.table.setColumnWidth(8, 600)
+        # self.table.setColumnWidth(4, 600)
+        # self.table.setColumnWidth(8, 600)
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         # Затем устанавливаем режим изменения размера колонки "Наименование закупки" на фиксированный размер
-        self.table.horizontalHeader().setSectionResizeMode(4, QHeaderView.Fixed)
-        self.table.horizontalHeader().setSectionResizeMode(8, QHeaderView.Fixed)
+        # self.table.horizontalHeader().setSectionResizeMode(4, QHeaderView.Fixed)
+        # self.table.horizontalHeader().setSectionResizeMode(8, QHeaderView.Fixed)
         self.table.setTextElideMode(Qt.ElideRight)
         self.table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.table.setShowGrid(True)
@@ -79,8 +79,8 @@ class PurchasesWidgetAll(QWidget):
                                     "Сортировать по Дате (Возростание)","Сортировать по Дате (Убывание)"])
          # Устанавливаем обработчик событий для выпадающего меню
        
-        # self.sort_options.setFixedWidth(250)
-        # self.sort_options.currentIndexChanged.connect(self.highlight_current_item)
+        self.sort_options.setFixedWidth(250)
+        self.sort_options.currentIndexChanged.connect(self.highlight_current_item)
         # unique_purchase_orders = Purchase.select(Purchase.PurchaseOrder).distinct()
         # self.sort_by_putch_order = QComboBox()
         # self.sort_by_putch_order.addItem("Фильтрация по Закону")
@@ -233,24 +233,24 @@ class PurchasesWidgetAll(QWidget):
         # self.sort_by_putch_ProcurementMethod.currentIndexChanged.connect(self.highlight_current_item)
         # self.sort_by_putch_CustomerName.currentIndexChanged.connect(self.highlight_current_item)
         # #меню по ключевому фильтрам
-        # self.menu_content_filters = QWidget()
-        # menu_layout_filters = QHBoxLayout()
-        # self.FilterLable = QLabel("Расшириная фильтрация по справочникам")
-        # menu_layout_filtersH = QVBoxLayout()
-        # menu_layout_filtersH.addWidget(line1)
-        # menu_layout_filtersH.addWidget(self.FilterLable)
-        # menu_layout_filters.addWidget(self.sort_options)
+        self.menu_content_filters = QWidget()
+        menu_layout_filters = QHBoxLayout()
+        self.FilterLable = QLabel("Расшириная фильтрация по справочникам")
+        menu_layout_filtersH = QVBoxLayout()
+        menu_layout_filtersH.addWidget(line1)
+        menu_layout_filtersH.addWidget(self.FilterLable)
+        menu_layout_filters.addWidget(self.sort_options)
         # menu_layout_filters.addWidget(self.sort_by_putch_order)
         # menu_layout_filters.addWidget(self.sort_by_putch_okpd2)
         # menu_layout_filters.addWidget(self.sort_by_putch_ProcurementMethod)
         # menu_layout_filters.addWidget(self.sort_by_putch_CustomerName)
-        # menu_layout_filters.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        # menu_layout_filtersH.addLayout(menu_layout_filters)
-        # self.menu_content_filters.setLayout(menu_layout_filtersH)
-        # self.menu_frame_filters = QFrame()
-        # self.menu_frame_filters.setLayout(QVBoxLayout())
-        # self.menu_frame_filters.layout().addWidget(self.menu_content_filters)
-        # self.menu_frame_filters.setVisible(False)
+        menu_layout_filters.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        menu_layout_filtersH.addLayout(menu_layout_filters)
+        self.menu_content_filters.setLayout(menu_layout_filtersH)
+        self.menu_frame_filters = QFrame()
+        self.menu_frame_filters.setLayout(QVBoxLayout())
+        self.menu_frame_filters.layout().addWidget(self.menu_content_filters)
+        self.menu_frame_filters.setVisible(False)
         #меню по  фильтрам цена
         self.menu_content_price = QWidget()
         menu_layout_price = QHBoxLayout()
@@ -309,8 +309,8 @@ class PurchasesWidgetAll(QWidget):
         layout.addWidget(self.All_parametrs_finder,alignment=Qt.AlignmentFlag.AlignLeft)
         layout.addLayout(button_layout_filters)
         # layout.addWidget(self.menu_frame)
-        # layout.addWidget(self.menu_frame_filters)
-        layout.addWidget(self.menu_frame_price)
+        layout.addWidget(self.menu_frame_filters)
+        # layout.addWidget(self.menu_frame_price)
         layout.addWidget(self.menu_frame_data)
         # toplayoutH = QHBoxLayout(self)
         # Добавляем выпадающее меню
@@ -700,17 +700,17 @@ class PurchasesWidgetAll(QWidget):
     def show_all_purchases(self):
     # Очищаем таблицу перед добавлением новых данных
         self.table.setRowCount(0)
-        self.label.setText(f"Всего записей {len(self.purchases_list)}")
-        if len(self.purchases_list) != 0:
-            for current_position, current_purchase in enumerate(self.purchases_list):
+        self.label.setText(f"Всего записей {len(self.ship_list)}")
+        if len(self.ship_list) != 0:
+            for current_position, current_ship in enumerate(self.ship_list):
                 # Добавляем новую строку для каждой записи
                 self.table.insertRow(current_position)
                 
                 # Добавляем данные в каждую ячейку для текущей записи
-                for col, value in enumerate([current_purchase.id, current_purchase.main_engine_model, current_purchase.reg_number ,str(current_purchase.construction_date)
-                                             , current_purchase.name,current_purchase.construction_place,
-                                             str(current_purchase.displacement), current_purchase.class_formula_category,
-                                              current_purchase.ship_project
+                for col, value in enumerate([current_ship.id, current_ship.reg_number, current_ship.name ,str(current_ship.construction_number)
+                                             , current_ship.ship_project,str(current_ship.type_and_purpose),
+                                             str(current_ship.construction_date), current_ship.construction_place,
+                                              current_ship.class_formula_category
                                              ]):
                     # item = QTableWidgetItem(str(value))
                     self.table.setItem(current_position, col, QTableWidgetItem())
@@ -724,7 +724,7 @@ class PurchasesWidgetAll(QWidget):
                     # if col == 6:  # Индексация колонок начинается с 0
                     #     item.setTextAlignment(Qt.AlignRight | Qt.AlignTop)
                     # Устанавливаем перенос текста в ячейке путем увеличения высоты строки
-                    self.table.setRowHeight(current_position, self.table.rowHeight(current_position) + 3)  # Увеличиваем высоту строки                        
+                    # self.table.setRowHeight(current_position, self.table.rowHeight(current_position) + 3)  # Увеличиваем высоту строки                        
                     # Добавляем данные в виде "название поля    - значение поля" для каждой колонки
         else:
             self.label.setText("Нет записей")     
@@ -775,7 +775,7 @@ class PurchasesWidgetAll(QWidget):
         max_price = self.max_price_input.text()
         min_data_valid = self.min_data_input.date().isValid()
         max_data_valid = self.max_data_input.date().isValid()
-        search_text = self.search_input.text()
+        # search_text = self.search_input.text()
         
         # Подсветка полей в зависимости от введенных данных
         if min_price or max_price:
@@ -795,11 +795,11 @@ class PurchasesWidgetAll(QWidget):
             self.max_data_input.setStyleSheet("")
            
         # Подсветка search_input
-        if search_text:
-            self.search_input.setStyleSheet("background-color: #ccffcc;")
-            self.QwordFinder.setStyleSheet("background-color: #ccffcc;")
-        else:
-            self.search_input.setStyleSheet("")
+        # if search_text:
+        #     self.search_input.setStyleSheet("background-color: #ccffcc;")
+        #     self.QwordFinder.setStyleSheet("background-color: #ccffcc;")
+        # else:
+        #     self.search_input.setStyleSheet("")
 
     def highlight_input_contract(self):
         min_price = self.min_price_input_contrac.text()
@@ -870,20 +870,20 @@ class PurchasesWidgetAll(QWidget):
     def apply_filter(self):
         self.current_position = 0
         self.selected_option = self.sort_options.currentText()
-
-        if  self.selected_option == "Сортировать по Цене (Возростание)":
-            order_by = Purchase.InitialMaxContractPrice
-        elif  self.selected_option == "Сортировать по Цены (Убывание)":
-            order_by = Purchase.InitialMaxContractPrice.desc()
-        elif  self.selected_option == "Сортировать по Дате (Убывание)":
-            order_by = Purchase.PlacementDate.desc()
+        ship = Ship.select()
+        # if  self.selected_option == "Сортировать по Цене (Возростание)":
+        #     order_by = Purchase.InitialMaxContractPrice
+        # elif  self.selected_option == "Сортировать по Цены (Убывание)":
+        #     order_by = Purchase.InitialMaxContractPrice.desc()
+        if  self.selected_option == "Сортировать по Дате (Убывание)":
+            order_by = Ship.construction_date.desc()
         elif  self.selected_option == "Сортировать по Дате (Возростание)":
-            order_by = Purchase.PlacementDate
+            order_by = Ship.construction_date
   
-
+        
         # Получаем минимальную и максимальную цены из полей ввода
-        self.min_price = float(self.min_price_input.text()) if self.min_price_input.text() else float('-inf')
-        self.max_price = float(self.max_price_input.text()) if self.max_price_input.text() else float('inf')
+        # self.min_price = float(self.min_price_input.text()) if self.min_price_input.text() else float('-inf')
+        # self.max_price = float(self.max_price_input.text()) if self.max_price_input.text() else float('inf')
 
         min_date_str = self.min_data_input.date()
         max_date_str = self.max_data_input.date()
@@ -894,61 +894,61 @@ class PurchasesWidgetAll(QWidget):
         
         # Выполняем запрос с фильтрацией по диапазону цен и сортировкой
         # Фильтр по цене
-        purchases = Purchase.select().where(
-            (Purchase.InitialMaxContractPrice.between(self.min_price, self.max_price))
-        ).order_by(order_by)
+        # purchases = Purchase.select().where(
+        #     (Purchase.InitialMaxContractPrice.between(self.min_price, self.max_price))
+        # ).order_by(order_by)
         # Фильтр по дате
         if  self.min_date and  self.max_date:
-            purchases = purchases.where(
-                (Purchase.PlacementDate.between( self.min_date,  self.max_date))
+            ship = ship.where(
+                (Ship.construction_date.between( self.min_date,  self.max_date))
             )
 
         # Фильтр по цене и дате
-        purchases_query_combined = Purchase.select().where(
-            (Purchase.InitialMaxContractPrice.between(self.min_price, self.max_price)) &
-            (Purchase.PlacementDate.between( self.min_date,  self.max_date) if  self.min_date and  self.max_date else True)
-        )
+        # purchases_query_combined = Purchase.select().where(
+        #     (Purchase.InitialMaxContractPrice.between(self.min_price, self.max_price)) &
+        #     (Purchase.PlacementDate.between( self.min_date,  self.max_date) if  self.min_date and  self.max_date else True)
+        # )
         # Фильтр по законам
        
-        self.selected_order = self.sort_by_putch_order.currentText()
-        if  self.selected_order != "Фильтрация по Закону":
-            purchases_query_combined = purchases_query_combined.where(
-                Purchase.PurchaseOrder ==  self.selected_order
-            )
-            # Фильтр по ОКПД2
-        self.selected_okpd = self.sort_by_putch_okpd2.currentText()
-        if  self.selected_okpd != "Фильтрация по ОКПД2":
-            purchases_query_combined = purchases_query_combined.where(
-                Purchase.OKPD2Classification ==  self.selected_okpd
-            )
-        # Фильтр по Методу закупки
-        self.selected_ProcurementMethod = self.sort_by_putch_ProcurementMethod.currentText()
-        if  self.selected_ProcurementMethod != "Фильтрация по Методу закупки":
-            purchases_query_combined = purchases_query_combined.where(
-                Purchase.ProcurementMethod ==  self.selected_ProcurementMethod
-            )
-        # Фильтр по Заказчикам
-        self.CustomerName = self.sort_by_putch_CustomerName.currentText()
-        if  self.CustomerName != "Фильтрация по Заказчикам":
-            purchases_query_combined = purchases_query_combined.where(
-                Purchase.CustomerName ==  self.CustomerName
-            )
-        keyword = self.selected_text
+    #     self.selected_order = self.sort_by_putch_order.currentText()
+    #     if  self.selected_order != "Фильтрация по Закону":
+    #         purchases_query_combined = purchases_query_combined.where(
+    #             Purchase.PurchaseOrder ==  self.selected_order
+    #         )
+    #         # Фильтр по ОКПД2
+    #     self.selected_okpd = self.sort_by_putch_okpd2.currentText()
+    #     if  self.selected_okpd != "Фильтрация по ОКПД2":
+    #         purchases_query_combined = purchases_query_combined.where(
+    #             Purchase.OKPD2Classification ==  self.selected_okpd
+    #         )
+    #     # Фильтр по Методу закупки
+    #     self.selected_ProcurementMethod = self.sort_by_putch_ProcurementMethod.currentText()
+    #     if  self.selected_ProcurementMethod != "Фильтрация по Методу закупки":
+    #         purchases_query_combined = purchases_query_combined.where(
+    #             Purchase.ProcurementMethod ==  self.selected_ProcurementMethod
+    #         )
+    #     # Фильтр по Заказчикам
+    #     self.CustomerName = self.sort_by_putch_CustomerName.currentText()
+    #     if  self.CustomerName != "Фильтрация по Заказчикам":
+    #         purchases_query_combined = purchases_query_combined.where(
+    #             Purchase.CustomerName ==  self.CustomerName
+    #         )
+    #     keyword = self.selected_text
         
 
-    # Добавляем фильтр по ключевому слову (RegistryNumber)
-        if keyword:
-            purchases_query_combined = purchases_query_combined.where(
-                (Purchase.RegistryNumber.contains(keyword)) |
-                (Purchase.ProcurementOrganization.contains(keyword)) |
-                     (Purchase.PurchaseName.contains(keyword)) |
-                     (Purchase.CustomerName.contains(keyword))
-            )
+    # # Добавляем фильтр по ключевому слову (RegistryNumber)
+    #     if keyword:
+    #         purchases_query_combined = purchases_query_combined.where(
+    #             (Purchase.RegistryNumber.contains(keyword)) |
+    #             (Purchase.ProcurementOrganization.contains(keyword)) |
+    #                  (Purchase.PurchaseName.contains(keyword)) |
+    #                  (Purchase.CustomerName.contains(keyword))
+    #         )
         
-        self.purchases = purchases_query_combined.order_by(order_by)
+        # self.purchases = purchases_query_combined.order_by(order_by)
         
-
-        self.purchases_list = list(self.purchases)
+        self.ship = ship
+        self.ship_list = list(self.ship)
        
         self.show_all_purchases()
 
@@ -1104,7 +1104,7 @@ class PurchasesWidgetAll(QWidget):
         # Возвращаем записи в исходное состояние без применения каких-либо фильтров
         self.reload_data()
         # Сброс стилей всех элементов к стандартному состоянию
-        # self.reset_styles()
+        self.reset_styles()
 
     def resetFiltersContract(self):
         # Очищаем все поля ввода
@@ -1122,8 +1122,8 @@ class PurchasesWidgetAll(QWidget):
     def reset_styles(self):
         # Сброс стилей всех элементов к стандартному состоянию
         for input_field in [self.min_price_input, self.max_price_input, self.apply_filter_button,
-                             self.sort_by_putch_order, self.search_input, self.sort_by_putch_okpd2, self.sort_options,
-                             self.sort_by_putch_CustomerName,self.sort_by_putch_ProcurementMethod,self.QwordFinder,self.FilterCollapse, self.FilterDate,self.FilterPrice]:
+                            self.sort_options,
+                             self.QwordFinder,self.FilterCollapse, self.FilterDate,self.FilterPrice]:
             input_field.setStyleSheet("")
         self.max_data_input.setStyleSheet(self.transparent_style) 
         self.min_data_input.setStyleSheet(self.transparent_style) 
@@ -1160,8 +1160,8 @@ class PurchasesWidgetAll(QWidget):
         else:
             pass
     def update_currency(self):
-        if len(self.purchases_list) != 0:
-            self.current_purchase = self.purchases_list[self.current_position]
+        if len(self.ship_list) != 0:
+            self.current_purchase = self.ship_list[self.current_position]
             purchase_id = self.current_purchase.Id
             self.curr_shower = InsertWidgetCurrency(purchase_id)
             self.curr_shower.show()
@@ -1296,8 +1296,8 @@ class PurchasesWidgetAll(QWidget):
                 QMessageBox.warning(self, "Предупреждение", "Не выбран файл для сохранения")
            
     def reload_data(self):
-        self.purchases = Ship.select()
-        self.purchases_list = list(self.purchases)
+        self.ship = Ship.select()
+        self.ship_list = list(self.ship)
         self.update()
         self.show_all_purchases()
 

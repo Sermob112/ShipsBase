@@ -16,7 +16,7 @@ from LoadCsv import CsvLoaderWidget
 # from ContractFormular import ContractFormularWidget
 from AllDbScroller import PurchasesWidgetAll
 # from ChangeLogWindow import ChangeLogWindow
-# from parserV3 import count_total_records
+from reader import count_total_records
 from datetime import datetime
 # from parserV3 import export_to_excel_all
 from models import *
@@ -73,25 +73,25 @@ class Ui_MainWindow(QMainWindow):
         self.users_roles = [user_role.role.name for user_role in user_roles]
         # Получаем самую раннюю дату
         
-        # earliest_date = Purchase.select(fn.Min(Purchase.PlacementDate)).scalar()
-        # if earliest_date:
-        #     erli = earliest_date.strftime('%d.%m.%Y')
-        # else:
-        #     erli = "Нет данных"
+        earliest_date = Ship.select(fn.Min(Ship.construction_date)).scalar()
+        if earliest_date:
+            erli = earliest_date.strftime('%d.%m.%Y')
+        else:
+            erli = "Нет данных"
         # # Получаем самую позднюю дату
        
-        # latest_date = Purchase.select(fn.Max(Purchase.PlacementDate)).scalar()
-        # if latest_date:
-        #     laster = latest_date.strftime('%d.%m.%Y')
-        # else:
-        #     laster = earliest_date = "Нет данных"
+        latest_date = Ship.select(fn.Max(Ship.construction_date)).scalar()
+        if latest_date:
+            laster = latest_date.strftime('%d.%m.%Y')
+        else:
+            laster = earliest_date = "Нет данных"
         self.user = f"Пользователь: <b>{self.username}</b>"
         self.role = f"Роль: <b>{self.users_roles[0]}</b>"
         self.date = f"Дата сеанса: <b>{self.formatted_date}</b>"
         self.dateUpdate = f"Дата последнего обновления БД: <b>{latest_changed_time}</b>"
-        # self.dateLastPurch = f"Данные о закупках с <b>{erli} по {laster} </b>"
-        # self.totalRecords = f"Закупок в БД:<b> {count_total_records()}</b>"
-        self.dbLabel.setText("БАЗА ДАННЫХ ОБОСНОВАНИЙ НАЧАЛЬНЫХ (МАКСИМАЛЬНЫХ) ЦЕН КОНТРАКТОВ И ЦЕН КОНТРАКТОВ, ЗАКЛЮЧАЕМЫХ С ЕДИНСТВЕННЫМ ПОСТАВЩИКОМ, А ТАКЖЕ ЦЕН ЗАКЛЮЧЕННЫХ ГОСУДАРСТВЕННЫХ КОНТРАКТОВ НА СТРОИТЕЛЬСТВО СУДОВ")
+        self.dateLastPurch = f"Данные о закупках с <b>{erli} по {laster} </b>"
+        self.totalRecords = f"Закупок в БД:<b> {count_total_records()}</b>"
+        self.dbLabel.setText("БАЗА ДАННЫХ ГРАЖДАНСКИХ СУДОВ, ПОСТРОЕННЫХ НА ВЕРФЯХ РВ В XXI ВЕКЕ")
 
         # Установка максимальной высоты
         self.dbLabel.setFixedWidth(480)
@@ -107,9 +107,7 @@ class Ui_MainWindow(QMainWindow):
         
         self.userLabel.setText(self.user)
         self.RolLabel.setText(self.role)
-        # self.rightTopLayout.addWidget(self.dbLabel)
-        # self.rightTopLayout.addWidget(self.userLabel)
-        # self.rightTopLayout.addWidget(self.RolLabel)
+
         self.purchaseLabel = QtWidgets.QLabel()
         self.purchaseLabel.setText( self.date)
         self.purchaseLabel2 = QtWidgets.QLabel()
@@ -123,8 +121,8 @@ class Ui_MainWindow(QMainWindow):
         self.topLayout.addLayout(self.rightLayout)
         
         self.rightLayout2 = QVBoxLayout()
-        # self.purchaseLabel2.setText(self.dateLastPurch)
-        # self.purchaseLabel3.setText(self.totalRecords)
+        self.purchaseLabel2.setText(self.dateLastPurch)
+        self.purchaseLabel3.setText(self.totalRecords)
         self.purchaseLabel4.setText(self.dateUpdate)
         self.rightLayout2.addWidget( self.purchaseLabel2)
         self.rightLayout2.addWidget( self.purchaseLabel3)
@@ -386,7 +384,7 @@ class Ui_MainWindow(QMainWindow):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "БАЗА ДАННЫХ ОБОСНОВАНИЙ НАЧАЛЬНЫХ (МАКСИМАЛЬНЫХ) ЦЕН КОНТРАКТОВ И ЦЕН КОНТРАКТОВ, ЗАКЛЮЧАЕМЫХ С ЕДИНСТВЕННЫМ ПОСТАВЩИКОМ, А ТАКЖЕ ЦЕН ЗАКЛЮЧЕННЫХ ГОСУДАРСТВЕННЫХ КОНТРАКТОВ НА СТРОИТЕЛЬСТВО СУДОВ"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "БАЗА ДАННЫХ ГРАЖДАНСКИХ СУДОВ, ПОСТРОЕННЫХ НА ВЕРФЯХ РВ В XXI ВЕКЕ"))
         self.pushButton0.setText(_translate("MainWindow", "Просмотр БД"))
         self.pushButton1.setText(_translate("MainWindow", "Ввод данных по закупкам"))
         self.pushButton2.setText(_translate("MainWindow", "Просмотр Формуляра Закупки"))
@@ -435,12 +433,26 @@ class Ui_MainWindow(QMainWindow):
             # from start import AuthWindow
             # self.auth_window = AuthWindow()
             # self.auth_window.show()
-    # def updatePurchaseLabel(self):
-    #     self.user = f"Пользователь: <b>{self.username}</b>"
-    #     self.date = f"Дата сеанса: <b>{self.formatted_date}</b>"
-    #     self.totalRecords = f"Закупок в БД:<b> {count_total_records()}</b>"
-    #     self.purchaseLabel3.setText(self.totalRecords)
-    #     self.purchaseLabel.setText(self.date)
+    def updatePurchaseLabel(self):
+        earliest_date = Ship.select(fn.Min(Ship.construction_date)).scalar()
+        if earliest_date:
+            erli = earliest_date.strftime('%d.%m.%Y')
+        else:
+            erli = "Нет данных"
+        # # Получаем самую позднюю дату
+            
+       
+        latest_date = Ship.select(fn.Max(Ship.construction_date)).scalar()
+        if latest_date:
+            laster = latest_date.strftime('%d.%m.%Y')
+        else:
+            laster = earliest_date = "Нет данных"
+        self.user = f"Пользователь: <b>{self.username}</b>"
+        self.date = f"Дата сеанса: <b>{self.formatted_date}</b>"
+        self.totalRecords = f"Закупок в БД:<b> {count_total_records()}</b>"
+        self.purchaseLabel3.setText(self.totalRecords)
+        self.dateLastPurch = f"Данные о закупках с <b>{erli} по {laster} </b>"
+        self.purchaseLabel.setText(self.date)
     # def return_variabels(self):
     #     self.user = f"Пользователь {self.username}"
     #     self.date = f"Дата сеанса{self.formatted_date}"
