@@ -74,20 +74,20 @@ class PurchasesWidgetAll(QWidget):
          
          # Создаем выпадающее меню
         self.sort_options = QComboBox()
-        self.sort_options.addItems(["Сортировать по Цене (Возростание)", "Сортировать по Цены (Убывание)",
+        self.sort_options.addItems([
                                     
                                     "Сортировать по Дате (Возростание)","Сортировать по Дате (Убывание)"])
          # Устанавливаем обработчик событий для выпадающего меню
        
         self.sort_options.setFixedWidth(250)
         self.sort_options.currentIndexChanged.connect(self.highlight_current_item)
-        # unique_purchase_orders = Purchase.select(Purchase.PurchaseOrder).distinct()
-        # self.sort_by_putch_order = QComboBox()
-        # self.sort_by_putch_order.addItem("Фильтрация по Закону")
-        # self.sort_by_putch_order.setFixedWidth(250)
-        # self.sort_by_putch_order.currentIndexChanged.connect(self.highlight_current_item)
-        # for order in unique_purchase_orders:
-        #     self.sort_by_putch_order.addItem(str(order.PurchaseOrder))
+        unique_projects= Ship.select(Ship.ship_project).distinct()
+        self.sort_by_rojects_order = QComboBox()
+        self.sort_by_rojects_order.addItem("Фильтрация по Проекту")
+        self.sort_by_rojects_order.setFixedWidth(250)
+        self.sort_by_rojects_order.currentIndexChanged.connect(self.highlight_current_item)
+        for order in unique_projects:
+            self.sort_by_rojects_order.addItem(str(order.ship_project))
 
 
       
@@ -240,7 +240,7 @@ class PurchasesWidgetAll(QWidget):
         menu_layout_filtersH.addWidget(line1)
         menu_layout_filtersH.addWidget(self.FilterLable)
         menu_layout_filters.addWidget(self.sort_options)
-        # menu_layout_filters.addWidget(self.sort_by_putch_order)
+        menu_layout_filters.addWidget(self.sort_by_rojects_order)
         # menu_layout_filters.addWidget(self.sort_by_putch_okpd2)
         # menu_layout_filters.addWidget(self.sort_by_putch_ProcurementMethod)
         # menu_layout_filters.addWidget(self.sort_by_putch_CustomerName)
@@ -831,21 +831,21 @@ class PurchasesWidgetAll(QWidget):
     def highlight_current_item(self, index):
         if index >= 0:
             sender = self.sender()  # Получаем объект, который вызвал сигнал
-            if sender == self.sort_by_putch_order:
-                self.sort_by_putch_order.setStyleSheet("background-color: #ccffcc;")
+            if sender == self.sort_by_rojects_order:
+                self.sort_by_rojects_order.setStyleSheet("background-color: #ccffcc;")
                 self.FilterCollapse.setStyleSheet("background-color: #ccffcc;")
-            elif sender == self.sort_by_putch_okpd2:
-                self.sort_by_putch_okpd2.setStyleSheet("background-color: #ccffcc;")
-                self.FilterCollapse.setStyleSheet("background-color: #ccffcc;")
-            elif sender == self.sort_options:
-                self.sort_options.setStyleSheet("background-color: #ccffcc;")
-                self.FilterCollapse.setStyleSheet("background-color: #ccffcc;")
-            elif sender == self.sort_by_putch_CustomerName:
-                self.sort_by_putch_CustomerName.setStyleSheet("background-color: #ccffcc;")
-                self.FilterCollapse.setStyleSheet("background-color: #ccffcc;")
-            elif sender == self.sort_by_putch_ProcurementMethod:
-                self.sort_by_putch_ProcurementMethod.setStyleSheet("background-color: #ccffcc;")
-                self.FilterCollapse.setStyleSheet("background-color: #ccffcc;")
+            # elif sender == self.sort_by_putch_okpd2:
+            #     self.sort_by_putch_okpd2.setStyleSheet("background-color: #ccffcc;")
+            #     self.FilterCollapse.setStyleSheet("background-color: #ccffcc;")
+            # elif sender == self.sort_options:
+            #     self.sort_options.setStyleSheet("background-color: #ccffcc;")
+            #     self.FilterCollapse.setStyleSheet("background-color: #ccffcc;")
+            # elif sender == self.sort_by_putch_CustomerName:
+            #     self.sort_by_putch_CustomerName.setStyleSheet("background-color: #ccffcc;")
+            #     self.FilterCollapse.setStyleSheet("background-color: #ccffcc;")
+            # elif sender == self.sort_by_putch_ProcurementMethod:
+            #     self.sort_by_putch_ProcurementMethod.setStyleSheet("background-color: #ccffcc;")
+            #     self.FilterCollapse.setStyleSheet("background-color: #ccffcc;")
 
     def highlight_current_item_contract(self, index):
         if index >= 0:
@@ -871,6 +871,7 @@ class PurchasesWidgetAll(QWidget):
         self.current_position = 0
         self.selected_option = self.sort_options.currentText()
         ship = Ship.select()
+      
         # if  self.selected_option == "Сортировать по Цене (Возростание)":
         #     order_by = Purchase.InitialMaxContractPrice
         # elif  self.selected_option == "Сортировать по Цены (Убывание)":
@@ -898,10 +899,10 @@ class PurchasesWidgetAll(QWidget):
         #     (Purchase.InitialMaxContractPrice.between(self.min_price, self.max_price))
         # ).order_by(order_by)
         # Фильтр по дате
-        if  self.min_date and  self.max_date:
-            ship = ship.where(
-                (Ship.construction_date.between( self.min_date,  self.max_date))
-            )
+        # if  self.min_date and  self.max_date:
+        #     ship = ship.where(
+        #         (Ship.construction_date.between( self.min_date,  self.max_date))
+        #     )
 
         # Фильтр по цене и дате
         # purchases_query_combined = Purchase.select().where(
@@ -910,12 +911,17 @@ class PurchasesWidgetAll(QWidget):
         # )
         # Фильтр по законам
        
-    #     self.selected_order = self.sort_by_putch_order.currentText()
-    #     if  self.selected_order != "Фильтрация по Закону":
-    #         purchases_query_combined = purchases_query_combined.where(
-    #             Purchase.PurchaseOrder ==  self.selected_order
-    #         )
-    #         # Фильтр по ОКПД2
+        self.selected_order = self.sort_by_rojects_order.currentText()
+        if  self.selected_order != "Фильтрация по Проекту":
+           ship = ship.where(
+                Ship.ship_project ==  self.selected_order
+            )
+           
+           
+        if  self.min_date and  self.max_date:
+            ship = ship.where(
+                (Ship.construction_date.between( self.min_date,  self.max_date))
+            )    #         # Фильтр по ОКПД2
     #     self.selected_okpd = self.sort_by_putch_okpd2.currentText()
     #     if  self.selected_okpd != "Фильтрация по ОКПД2":
     #         purchases_query_combined = purchases_query_combined.where(
@@ -945,9 +951,9 @@ class PurchasesWidgetAll(QWidget):
     #                  (Purchase.CustomerName.contains(keyword))
     #         )
         
-        # self.purchases = purchases_query_combined.order_by(order_by)
+        # self.ship  = ship_combined.order_by(order_by)
         
-        self.ship = ship
+        self.ship = ship.order_by(order_by)
         self.ship_list = list(self.ship)
        
         self.show_all_purchases()
@@ -1088,7 +1094,7 @@ class PurchasesWidgetAll(QWidget):
         self.max_price_input.clear()
         self.min_data_input.setDate(QDate(2000, 1, 1))
         self.max_data_input.setDate(self.max_data_input.date().currentDate())
-        # self.sort_by_putch_order.setCurrentIndex(0)  # Сбрасываем выбранное значение в выпадающем списке
+        self.sort_by_rojects_order.setCurrentIndex(0)  # Сбрасываем выбранное значение в выпадающем списке
         # self.search_input.clear()
         self.current_position = 0
         # self.sort_by_putch_okpd2.setCurrentIndex(0)
@@ -1122,7 +1128,7 @@ class PurchasesWidgetAll(QWidget):
     def reset_styles(self):
         # Сброс стилей всех элементов к стандартному состоянию
         for input_field in [self.min_price_input, self.max_price_input, self.apply_filter_button,
-                            self.sort_options,
+                            self.sort_options,self.sort_by_rojects_order,
                              self.QwordFinder,self.FilterCollapse, self.FilterDate,self.FilterPrice]:
             input_field.setStyleSheet("")
         self.max_data_input.setStyleSheet(self.transparent_style) 
