@@ -9,7 +9,7 @@ from PySide6 import QtWidgets
 from DBtest import PurchasesWidget
 from LoadCsv import CsvLoaderWidget
 # from InsertWidgetNMCK import InsertWidgetNMCK
-# from statisticWidget import StatisticWidget
+from statisticWidget import StatisticWidget
 # from CurrencyWindow import CurrencyWidget
 # from debugWindow import DebugWidget
 # from HelpPanel import HelpPanel
@@ -332,10 +332,10 @@ class Ui_MainWindow(QMainWindow):
         layout = QVBoxLayout(self.page1)
         layout.addWidget(self.loadCsv)
         #   #Загрузка виджета статистического анализа
-        # self.Statistic = StatisticWidget(self.purchaseViewerall,self.users_roles[0])
-        # self.Statistic.setParent(self)
-        # layout = QVBoxLayout(self.page3)
-        # layout.addWidget(self.Statistic)
+        self.Statistic = StatisticWidget(self.purchaseViewerall,self.users_roles[0])
+        self.Statistic.setParent(self)
+        layout = QVBoxLayout(self.page3)
+        layout.addWidget(self.Statistic)
 
         # #Загрузка виджета помощи
 

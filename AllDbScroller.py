@@ -1086,7 +1086,7 @@ class PurchasesWidgetAll(QWidget):
 
 
     def return_filtered_purchase(self):
-        return self.purchases
+        return self.ship
 
     def resetFilters(self):
         # Очищаем все поля ввода
