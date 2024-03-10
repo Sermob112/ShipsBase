@@ -59,10 +59,11 @@ class StatisticWidget(QWidget):
         # self.all_data = [self.analis(),self.analisNMSK(),self.analisOKPD2(),self.analisQueryCount(), 
         #                  self.analisQueryCountAccept(),self.analisQueryCountDecline(),
         #                  self.analisNMCKReduce(),self.analyze_price_count(), self.analisMAxPrice(),self.analisCoeffVar()]
-        self.all_data = [self.analis()]
+        self.all_data = [self.analis(),self.analis_by_project()]
         
         self.label_texts = [
-            "Анализ методов, использованных для определения НМЦК и ЦКЕП"
+            "Анализ по количеству судов, выпущенных за год",
+            "Анализ по количеству проектов"
         ]
         self.buttons = []
 
@@ -95,7 +96,7 @@ class StatisticWidget(QWidget):
         menu_layout = QVBoxLayout()
         self.Qword = QLabel("Анализ методов и формулировок в государственных закупках")
         menu_layout.addWidget(self.Qword)
-        for index, text in enumerate(self.label_texts[:3]):
+        for index, text in enumerate(self.label_texts):
            
             button = QtWidgets.QPushButton()
             button.setText(text) 
@@ -195,10 +196,10 @@ class StatisticWidget(QWidget):
         # scroll_widget.setLayout(self.buttons_layout)
         self.buttons_layout.addWidget(self.FirstStage)
         self.buttons_layout.addWidget(self.menu_frame)
-        self.buttons_layout.addWidget(self.SecondStage)
-        self.buttons_layout.addWidget(self.menu_frame_2)
-        self.buttons_layout.addWidget(self.ThirdStage)
-        self.buttons_layout.addWidget(self.menu_frame_3)
+        # self.buttons_layout.addWidget(self.SecondStage)
+        # self.buttons_layout.addWidget(self.menu_frame_2)
+        # self.buttons_layout.addWidget(self.ThirdStage)
+        # self.buttons_layout.addWidget(self.menu_frame_3)
         self.buttons_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         
         # scroll_area.setWidget(scroll_widget)
@@ -274,7 +275,7 @@ class StatisticWidget(QWidget):
         # self.all_data = [self.analis(),self.analisNMSK(), self.analisMAxPrice(),self.analisCoeffVar(),self.analisQueryCount(), 
         #                  self.analisQueryCountAccept(),self.analisQueryCountDecline(),
         #                  self.analisNMCKReduce(),self.analyze_price_count(),self.analisOKPD2()]
-        self.all_data = [self.analis()]
+        self.all_data = [self.analis(), self.analis_by_project()]
         self.show_current_data()
         self.query = self.all_purchase.return_filtered_purchase()
         sort_by_putch_order, min_date, max_date, min_price, max_price, okpd2= self.all_purchase.return_filters_variabels()
@@ -392,32 +393,31 @@ class StatisticWidget(QWidget):
       
     def analis(self):
    
-        ships = Ship.select()  # Предположим, что здесь вы делаете запрос к вашей модели Ship
+        ships = self.query # Предположим, что здесь вы делаете запрос к вашей модели Ship
         df = pd.DataFrame([(ship.construction_date.year, ship.id) for ship in ships], columns=['Год', 'Ед'])
-        pivot_table = df.pivot_table(index='Год', aggfunc='size', fill_value=0)
-        pivot_table.columns = ['Год', 'Ед']
+        pivot_table = df.pivot_table(index='Год', aggfunc='size', fill_value=0).reset_index()
+        pivot_table.columns = ['Год', 'Ед']  # Называем столбцы после создания сводной таблицы
         total_ship_counts = pivot_table.sum()
 
         total_purchase_counts = total_ship_counts.sum()
         # Создаем DataFrame из суммы
         total_ship_counts = pd.DataFrame({'Суммы': [total_purchase_counts]})
         total_ship_counts.index = ['Итого']
-        pivot_table = pivot_table.reset_index()
         return pivot_table, total_ship_counts 
     
     
-    def analisNMSK(self):
-        #Статистический анализ методов, использованных для определения НМЦК и ЦКЕП
-        purchases = self.query
-        df = pd.DataFrame([(purchase.AuctionSubject, purchase.PurchaseOrder) for purchase in purchases], columns=['AuctionSubject', 'PurchaseOrder'])
-        pivot_table = df.pivot_table(index='AuctionSubject', columns='PurchaseOrder', aggfunc='size', fill_value=0)
-        column_sums = pivot_table.sum()
-        
-        row_totals = pivot_table.sum(axis=1)
-        pivot_table['Общий итог'] = row_totals
-        total_purchase_counts = column_sums.sum()
-        column_sums['Суммы'] = total_purchase_counts
-        return pivot_table, column_sums
+    def analis_by_project(self):
+        ships = self.query # Предположим, что здесь вы делаете запрос к вашей модели Ship
+        df = pd.DataFrame([(ship.ship_project, ship.id) for ship in ships], columns=['Проект', 'Ед'])
+        pivot_table = df.pivot_table(index='Проект', aggfunc='size', fill_value=0).reset_index()
+        pivot_table.columns = ['Проект', 'Ед']  # Называем столбцы после создания сводной таблицы
+
+        total_ship_counts = pivot_table['Ед'].sum()  # Применяем sum() только к столбцу 'Ед'
+
+        # Создаем DataFrame из суммы
+        total_ship_counts = pd.DataFrame({'Суммы': [total_ship_counts]})
+        total_ship_counts.index = ['Итого']
+        return pivot_table, total_ship_counts
     
     def analisOKPD2(self):
         # Получаем отфильтрованные данные из peewee
