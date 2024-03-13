@@ -372,6 +372,12 @@ class Ui_MainWindow(QMainWindow):
         self.retranslateUi(self)
         QtCore.QMetaObject.connectSlotsByName(self)
 
+        self.pushButton4.hide()
+        self.pushButton5.hide()
+        self.pushButton5_1.hide()
+        self.pushButton6.hide()
+        self.pushButton7.hide()
+        self.pushButton8.hide()
         if self.users_roles[0] == "Администратор":
             self.pushButton6.show()
         else:
@@ -386,7 +392,7 @@ class Ui_MainWindow(QMainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "БАЗА ДАННЫХ ГРАЖДАНСКИХ СУДОВ, ПОСТРОЕННЫХ НА ВЕРФЯХ РВ В XXI ВЕКЕ"))
         self.pushButton0.setText(_translate("MainWindow", "Просмотр БД"))
-        self.pushButton1.setText(_translate("MainWindow", "Ввод данных по закупкам"))
+        self.pushButton1.setText(_translate("MainWindow", "Ввод данных по суднам"))
         self.pushButton2.setText(_translate("MainWindow", "Просмотр Формуляра Закупки"))
         self.pushButton3.setText(_translate("MainWindow", "Статистический анализ"))
         self.pushButton4.setText(_translate("MainWindow", "Валюта"))
